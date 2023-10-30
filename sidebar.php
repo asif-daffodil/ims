@@ -33,6 +33,17 @@
                             <a class="nav-link <?= basename($_SERVER["PHP_SELF"]) =="addneworders.php" ? "active":null ?>" href="./addneworders.php">Add New Orders</a>
                         </nav>
                     </div>
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == "allclients.php" || basename($_SERVER['PHP_SELF']) == "addnewclient.php" ? "active":"collapsed" ?>" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="<?= basename($_SERVER['PHP_SELF']) == "allclients.php" || basename($_SERVER['PHP_SELF']) == "addnewclient.php" ? true:false ?>" aria-controls="collapsePages">
+                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                        Clients
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse <?= basename($_SERVER['PHP_SELF']) == "allclients.php" || basename($_SERVER['PHP_SELF']) == "addnewclient.php" ? "show":null ?>" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link <?= basename($_SERVER["PHP_SELF"]) == "allclients.php" ? "active":null ?>" href="./allclients.php">All Clients</a>
+                            <a class="nav-link <?= basename($_SERVER["PHP_SELF"]) =="addnewclient.php" ? "active":null ?>" href="./addnewclient.php">Add New Clients</a>
+                        </nav>
+                    </div>
                     <div class="sb-sidenav-menu-heading">Addons</div>
                     <a class="nav-link" href="charts.html">
                         <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>

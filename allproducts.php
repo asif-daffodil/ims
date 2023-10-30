@@ -93,7 +93,7 @@ if (isset($_POST['dsub'])) {
         <div class="container-fluid px-4">
             <div class="row">
                 <?php
-                if (!isset($_GET['eid']) && !isset($_GET['did'])) {
+                if (!isset($_GET['eid']) && !isset($_GET['did']) && !isset($_GET['addproduct'])) {
                 ?>
                     <div class="col-md-12">
                         <h2>All Products</h2>
@@ -103,11 +103,9 @@ if (isset($_POST['dsub'])) {
                                 <tr>
                                     <th>Product Name</th>
                                     <th>Brand</th>
-                                    <th>Type</th>
                                     <th>Price</th>
                                     <th>Stock</th>
                                     <th>Shelf No</th>
-                                    <th>Description</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -134,12 +132,11 @@ if (isset($_POST['dsub'])) {
                                         echo "<tr>
                                             <td>" . $row['name'] . "</td>
                                             <td>" . $brandname . "</td>
-                                            <td>" . $typename . "</td>
                                             <td>" . $row['price'] . "</td>
                                             <td>" . $row['stock'] . "</td>
                                             <td>" . $row['shelf_no'] . "</td>
-                                            <td>" . htmlspecialchars_decode($row['description']) . "</td>
-                                            <td>
+                                            <td style='width: max-content'>
+                                                <a href='allproducts.php?addproduct=" . $row['id'] . "' class='btn btn-primary btn-sm'><i class='fas fa-plus'></i></a>
                                                 <a href='allproducts.php?eid=" . $row['id'] . "' class='btn btn-primary btn-sm'><i class='fas fa-edit'></i></a>
                                                 <a href='allproducts.php?did=" . $row['id'] . "' class='btn btn-danger btn-sm'><i class='fas fa-trash'></i></a>
                                             </td>
@@ -156,7 +153,7 @@ if (isset($_POST['dsub'])) {
                     </div>
                 <?php } ?>
                 <?php
-                    if (isset($_GET['eid'])) {
+                if (isset($_GET['eid'])) {
                 ?>
                     <div class="col-md-6">
                         <h2>Edit Product</h2>
@@ -248,9 +245,52 @@ if (isset($_POST['dsub'])) {
                         </form>
                     </div>
                 <?php
-                    }
+                }
                 ?>
             </div>
+            <?php  
+                if(isset($_POST["addsub"])){
+                    $pid = $conn->real_escape_string(safuda($_POST["pid"]));
+                    $quantity = $conn->real_escape_string(safuda($_POST["quantity"]));
+                    if(!empty($pid) && !empty($quantity)){
+                        $sql = "UPDATE `products` SET `stock` = `stock` + '$quantity' WHERE `id` = '$pid'";
+                        $result = mysqli_query($conn, $sql);
+                        if($result){
+                            echo "<script>toastr.success('Product Added Successfully');setTimeout(()=> location.href='allproducts.php',2000)</script>";
+                        }else{
+                            echo "<script>toastr.error('Product Added Failed')</script>";
+                        }
+                    }else{
+                        echo "<script>toastr.error('Something went wrong')</script>";
+                    }
+                }
+            ?>
+            <?php  
+                if (isset($_GET["addproduct"])) {
+                    $pid = $_GET["addproduct"];
+                    $sql = "SELECT * FROM `products` WHERE `id` = '$pid'";
+                    $result = mysqli_query($conn, $sql);
+                    $row = mysqli_fetch_object($result);
+                    $pstock = $row->stock;
+                    $pname = $row->name;
+            ?>
+            <div class="col-md-6">
+                <h2 class="mb-3 mt-2">Add Product</h2>
+                <h5><?= $pname ?></h5>
+                <form action="" method="post">
+                    <input type="hidden" value="<?= $pid ?>" name="pid">
+                    <div class="mb-3">
+                        <label for="">Previous Quantity :</label>
+                        <input type="number" placeholder="Quantity" value="<?= $pstock ?>" class="form-control disabled" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <input type="number" placeholder="Add New Quantity" name="quantity" class="form-control ">
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-sm" value="Add" name="addsub">
+                    <a href="javascript:void()" class="btn btn-danger btn-sm" onclick="javascript:history.back()">Cancel</a>
+                </form>
+            </div>
+            <?php } ?>
         </div>
         <?php
         include_once("footer.php");
